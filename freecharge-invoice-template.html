@@ -67,22 +67,43 @@
             <div class="detailsOuter clearfix">
               <ul class="detailsList fLeft">
                 <li>
+                  <span class="ltTxt">Customer Name</span>
+                  <span class="rtTxt"
+                    >:&nbsp; <span id="customerName"></span
+                  ></span>
+                </li>
+
+                <li>
                   <span class="ltTxt">Order Id</span>
-                  <span class="rtTxt"
-                    >:&nbsp; <span id="oId">FCVA171106681256906</span></span
-                  >
+                  <span class="rtTxt">:&nbsp; <span id="oId"></span></span>
                 </li>
                 <li>
-                  <span class="ltTxt">Recharge Date</span>
-                  <span class="rtTxt"
-                    >:&nbsp; <span id="rDate">2019-02-11</span></span
-                  >
+                  <span class="ltTxt">Invoice no</span>
+                  <span class="rtTxt">:&nbsp; <span id="invcId"></span></span>
                 </li>
                 <li>
-                  <span class="ltTxt">Recharged No.</span>
+                  <span class="ltTxt">Mobile no</span>
                   <span class="rtTxt"
-                    >:&nbsp; <span id="rMob">9008088811</span></span
-                  >
+                    >:&nbsp; <span id="mobileNumber"></span
+                  ></span>
+                </li>
+                <li>
+                  <span class="ltTxt">Recharge done for</span>
+                  <span class="rtTxt">:&nbsp; <span id="rMob"></span></span>
+                </li>
+                <li>
+                  <span class="ltTxt">Registered Email</span>
+                  <span class="rtTxt">:&nbsp; <span id="rEmail"></span></span>
+                </li>
+                <li>
+                  <span class="ltTxt">Invoice Date</span>
+                  <span class="rtTxt">:&nbsp; <span id="rDate"></span></span>
+                </li>
+                <li>
+                  <span class="ltTxt">Account Number</span>
+                  <span class="rtTxt"
+                    >:&nbsp; <span id="accountNo"></span
+                  ></span>
                 </li>
               </ul>
               <!-- /.detailsList -->
@@ -101,17 +122,38 @@
                   </tr>
                   <tr>
                     <td class="center">1.</td>
-                    <td>Recharge Amount</td>
+                    <td>Transaction Amount</td>
                     <td>Rs. <span id="amt">35.0 </span></td>
                   </tr>
                   <tr>
                     <td class="center">2.</td>
-                    <td>Coupon charges</td>
+                    <td>Payment Handling Charges</td>
                     <td>Rs. 0.0</td>
                   </tr>
                   <tr>
-                    <td colspan="2" class="alignRt">Total Amount</td>
-                    <td><strong id="tamt">Rs. 35.0</strong></td>
+                    <td class="center">3.</td>
+                    <td>Taxable Value of Supply</td>
+                    <td>Rs. <span id="txamt">35.0 </span></td>
+                  </tr>
+                  <tr>
+                    <td class="center">4.</td>
+                    <td>CGST @9%</td>
+                    <td>Rs. <span id="cgst">35.0 </span></td>
+                  </tr>
+                  <tr>
+                    <td class="center">5.</td>
+                    <td>SGST @9%</td>
+                    <td>Rs. <span id="sgst">35.0 </span></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">Total Amount</td>
+                    <td>Rs. <strong id="tamt">Rs. 35.0</strong></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      Whether the tax is payable on reverse charge basis
+                    </td>
+                    <td>No</td>
                   </tr>
                 </table>
                 <!-- /.invoiceTable -->
@@ -152,9 +194,32 @@
         left: 35%;
       "
     >
+      <input
+        type="text"
+        id="cusName"
+        value="Ravikant Pal"
+        placeholder="Customer Name"
+      />
+      <input
+        type="text"
+        id="emailId"
+        value="ravikantpal010@gmail.com"
+        placeholder="Email Id"
+      />
+      <input
+        type="text"
+        id="accNo"
+        value="3820192010"
+        placeholder="Account No"
+      />
       <input type="date" id="dateIP" />
-      <input type="text" id="amtIP" value="4500" />
-      <input type="text" id="mobIP" value="9008088811" />
+      <input type="text" id="amtIP" value="4500.00" placeholder="Amount" />
+      <input
+        type="text"
+        id="mobIP"
+        value="8953149094"
+        placeholder="Mobile Number"
+      />
       <button type="button" onclick="generate(this);" style="width: inherit">
         Generate
       </button>
@@ -203,21 +268,29 @@
         var day = date[2];
         var tamt = document.getElementById("amtIP").value;
         var number = document.getElementById("mobIP").value;
+        var cusName = document.getElementById("cusName").value;
+        var emailId = document.getElementById("emailId").value;
+        var accNo = document.getElementById("accNo").value;
         var orderId = "FCVA" + year.substring(2, 4) + month + day + random(9);
-        // var invcId = "AC"+year.substring(2,4)+month+day+random(7);
-        //var cgst = tamt * .09;
-        //var sgst = tamt * .09;
-        //var amt = tamt - (cgst+sgst);
-        var amt = tamt;
+        var invcId = "AC" + year.substring(2, 4) + month + day + random(7);
+        let calGstAmount = (tamt - tamt / 1.18) / 2;
+        var cgst = calGstAmount;
+        var sgst = calGstAmount;
+        var amt = tamt - (cgst + sgst);
+        // var amt = tamt;
+        document.getElementById("customerName").innerHTML = cusName;
         document.getElementById("oId").innerHTML = orderId;
-        //document.getElementById("invcId").innerHTML = invcId;
-        document.getElementById("amt").innerHTML = amt;
-        //document.getElementById("txamt").innerHTML = amt;
-        //document.getElementById("cgst").innerHTML = cgst;
-        //document.getElementById("sgst").innerHTML = sgst;
+        document.getElementById("invcId").innerHTML = invcId;
+        document.getElementById("amt").innerHTML = amt.toFixed(2);
+        document.getElementById("txamt").innerHTML = amt.toFixed(2);
+        document.getElementById("cgst").innerHTML = cgst.toFixed(2);
+        document.getElementById("sgst").innerHTML = sgst.toFixed(2);
         document.getElementById("tamt").innerHTML = tamt;
         document.getElementById("rDate").innerHTML = date.join("-");
-        document.getElementById("rMob").innerHTML = number;
+        document.getElementById("rMob").innerHTML = "+91" + number;
+        document.getElementById("rEmail").innerHTML = emailId;
+        document.getElementById("accountNo").innerHTML = accNo;
+        document.getElementById("mobileNumber").innerHTML = "+91" + number;
 
         document.getElementById("formDIV").style.display = "none";
         document.getElementById("pageWidthId").style.display = "block";
